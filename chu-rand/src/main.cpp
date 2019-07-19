@@ -43,8 +43,9 @@
 #include "skse64/PapyrusEventFunctor.h"
 #include "skse64/GameEvents.h"
 #include <set>
-#include "ExamplePlugin-SKSE64-master/lib/EventFunctors.h"
-#include "ExamplePlugin-SKSE64-master/lib/EventHelpers.h"
+#include "chu-rand/lib/EventFunctors.h"
+#include "chu-rand/lib/EventHelpers.h"
+#include "chu-rand/lib/EventFunctors.h"
 
 static SKSEPapyrusInterface         * g_papyrus = NULL;
 extern EventDispatcher<SKSEModCallbackEvent>	g_modCallbackEventDispatcher;
@@ -60,6 +61,7 @@ namespace chutools
 			{
 				TESForm * form = NULL;
 				forms.Get(&form, i);
+				
 				if (form)
 					CALL_MEMBER_FN(list, AddFormToList)(form);
 			}
