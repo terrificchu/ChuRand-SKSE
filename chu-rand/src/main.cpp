@@ -53,7 +53,7 @@ namespace chutools
 {
 
 
-	void shufflelootlst(BGSListForm * list, VMArray<TESForm*> forms)
+	void distributeformlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, BGSListForm * list, VMArray<TESForm*> forms)
 	{
 		if (list)
 		{
@@ -359,7 +359,7 @@ namespace chutools
 	bool RegisterFuncs(VMClassRegistry* a_registry) {
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
-
+		new NativeFunction2<StaticFunctionTag, void, BGSListForm*, VMArray<TESForm*>>("distributeformlist", "chutools", chutools::distributeformlist, a_registry);
 		return true;
 	}
 
