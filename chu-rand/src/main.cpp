@@ -53,17 +53,26 @@ namespace chutools
 {
 
 
-	void distributeformlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, BGSListForm * list, VMArray<TESForm*> forms)
+	void distributeformlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, BGSListForm * list, VMArray<TESLevItem*> forms)
 	{
+		int progress = 0;
+		
 		if (list)
 		{
-			for (UInt32 i = 0; i < forms.Length(); i++)
+			for (UInt32 i = 1; i < forms.Length(); i++)
 			{
-				TESForm * form = NULL;
-				forms.Get(&form, i);
-				
-				if (form)
-					CALL_MEMBER_FN(list, AddFormToList)(form);
+				TESLevItem * form2 = NULL;
+				forms.Get(&form2, i);
+				if (form2)
+				{
+					for (UInt32 k = 0; k < 250; k++)
+					{
+						TESLeveledList * check = &form2->leveledList;
+
+						progress += 1;
+
+					}
+				}
 			}
 		}
 	}
@@ -359,7 +368,8 @@ namespace chutools
 	bool RegisterFuncs(VMClassRegistry* a_registry) {
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
-		new NativeFunction2<StaticFunctionTag, void, BGSListForm*, VMArray<TESForm*>>("distributeformlist", "chutools", chutools::distributeformlist, a_registry);
+		a_registry->RegisterFunction(
+			new NativeFunction2<StaticFunctionTag, void, BGSListForm*, VMArray<TESLevItem*>>("distributeformlist", "chutools", chutools::distributeformlist, a_registry));
 		return true;
 	}
 
