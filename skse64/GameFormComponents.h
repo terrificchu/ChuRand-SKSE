@@ -536,6 +536,9 @@ public:
 	UInt32	pad14;		// 14
 	void	* unk18;	// 18
 	TESGlobal * chanceGlobal;		// 20
+
+	MEMBER_FN_PREFIX(TESLeveledList);
+	DEFINE_MEMBER_FN(LAddForm, void, 0x00198B80, TESForm * apForm, UInt16 level, UInt16 count);
 };
 
 // 28 

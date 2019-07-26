@@ -8,9 +8,6 @@
     <ClCompile Include="GameData.cpp">
       <Filter>api</Filter>
     </ClCompile>
-    <ClCompile Include="GameFormComponents.cpp">
-      <Filter>api</Filter>
-    </ClCompile>
     <ClCompile Include="GameForms.cpp">
       <Filter>api</Filter>
     </ClCompile>
@@ -413,15 +410,15 @@
     <ClCompile Include="BSModelDB.cpp">
       <Filter>netimmerse</Filter>
     </ClCompile>
+    <ClCompile Include="GameFormComponents.cpp">
+      <Filter>api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameAPI.h">
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="GameData.h">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="GameFormComponents.h">
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="GameForms.h">
@@ -831,6 +828,9 @@
     </ClInclude>
     <ClInclude Include="BSModelDB.h">
       <Filter>netimmerse</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFormComponents.h">
+      <Filter>api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

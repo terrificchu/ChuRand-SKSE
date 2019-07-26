@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\version.h" />
+    <ClInclude Include="lib\EventHelpers.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\EventFunctors.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\skse64\GameFormComponents.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def" />
+    <None Include="lib\EventFunctors.inl">
+      <Filter>lib</Filter>
+    </None>
+    <None Include="lib\EventFunctors_Base.inl">
+      <Filter>lib</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="lib">
+      <UniqueIdentifier>{2b072cd1-a101-4d7c-ad77-1df6605aa681}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

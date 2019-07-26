@@ -22,8 +22,6 @@
 #include "skse64/GameReferences.h"
 #include "skse64/PapyrusGameData.h"
 #include "skse64/PapyrusDelayFunctors.h"
-
-#include "skse64/GameFormComponents.h"
 #include "skse64/GameData.h"
 #include "skse64/GameRTTI.h"
 #include "skse64/GameForms.h"
@@ -46,6 +44,7 @@
 #include "chu-rand/lib/EventFunctors.h"
 #include "chu-rand/lib/EventHelpers.h"
 #include "chu-rand/lib/EventFunctors.h"
+#include "skse64/GameFormComponents.h"
 
 static SKSEPapyrusInterface         * g_papyrus = NULL;
 extern EventDispatcher<SKSEModCallbackEvent>	g_modCallbackEventDispatcher;
@@ -67,10 +66,13 @@ namespace chutools
 				{
 					for (UInt32 k = 0; k < 250; k++)
 					{
-						TESLeveledList * check = &form2->leveledList;
-
+						CALL_MEMBER_FN(&form2->leveledList, LAddForm)(list->forms.entries[progress], 1, 1);
 						progress += 1;
+						form2->leveledList.entries[k].form = list->forms.entries[progress];
 
+
+						_MESSAGE(" formid" );
+						
 					}
 				}
 			}
