@@ -85,7 +85,8 @@ namespace chutools
 							int lindex = aj[progress];
 							std::uniform_int_distribution<int> distribution(1, 25);
 							int r1 = distribution(generator);
-							CALL_MEMBER_FN(&form2->leveledList, LAddForm)(&form2->leveledList, r1, r1, list->forms.entries[lindex]);
+							int r2 = distribution(generator);
+							CALL_MEMBER_FN(&form2->leveledList, LAddForm)(&form2->leveledList, r1, r2, list->forms.entries[lindex]);
 							progress += 1;
 
 
