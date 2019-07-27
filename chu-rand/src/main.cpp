@@ -214,6 +214,7 @@ namespace chutools
 		else if (reftype == 61)
 		{
 		  //TODO
+		  return tomatch;
 		}
 		else if (reftype == 28)
 		{
@@ -233,6 +234,26 @@ namespace chutools
 
 				return DYNAMIC_CAST(refToPlace, TESObjectCONT, TESForm);
 
+			}
+		}
+		else if (reftype == 53)
+		{
+
+
+			int size = dataHandler->arrLVLI.count - 1;
+
+			int r1 = randintrange(0, size);
+			TESForm* refToPlace = NULL;
+			while (dataHandler->arrLVLI.GetNthItem(r1, refToPlace) == NULL)
+			{
+				int r1 = randintrange(0, size);
+				dataHandler->arrLVLI.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+
+				return refToPlace;
+	
 			}
 		}
 		else
@@ -348,7 +369,77 @@ namespace chutools
 		}
 	}
 	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms)
-	{}
+	{
+		bool alogic = false;
+		bool blogic = false;
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+
+		for (UInt32 i = 0; i < dataHandler->arrLVLI.count; i++)
+		{
+			bool matchform = false;
+			TESForm * tempLVLIF = NULL;
+			dataHandler->arrLVLI.GetNthItem(i, tempLVLIF);
+			TESLevItem * tempLVLI = DYNAMIC_CAST(tempLVLIF, TESForm, TESLevItem);
+			int lsize = tempLVLI->leveledList.length;
+			for (UInt32 p = 0; p < 39; p++)
+			{
+				TESLevItem * form2 = NULL;
+				forms.Get(&form2, p);
+				if (form2 == tempLVLI)
+				{
+					matchform = true;
+				}
+			}
+			if (matchform == false)
+			{
+				for (UInt32 k = 0; k < lsize; k++)
+				{
+					if (tempLVLI->leveledList.length > 250 || k > 250)
+					{
+						break;
+					}
+					else
+					{
+						if (tempLVLI->leveledList.entries[k].form)
+						{
+
+							TESForm * toadd = NULL;
+
+							do {
+
+								toadd = randformofsametype(tempLVLI->leveledList.entries[k].form);
+
+							} while (!toadd  || toadd->formID == tempLVLIF->formID);
+							if (alogic == false && blogic == false)
+							{
+								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
+							}
+							else if (alogic == true && tempLVLI->leveledList.entries[k].form->formType == 53)
+							{
+								continue;
+							}
+							else if (alogic == true && blogic == true)
+							{
+								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
+							}
+							else if (alogic == true && blogic == false)
+							{
+								int r1 = randintrange(1, 75);
+								int r2 = randintrange(1, 5);
+								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, r1, r2, toadd);
+
+							}
+							
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell)
 	{
 
@@ -398,10 +489,7 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							;
 						}
 
 					}
@@ -433,10 +521,7 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 30)
@@ -454,10 +539,7 @@ namespace chutools
 						if (refToPlace != NULL)
 						{
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 32)
@@ -484,10 +566,7 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 46)
@@ -506,10 +585,7 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 40)
@@ -528,10 +604,7 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 43)
@@ -555,11 +628,7 @@ namespace chutools
 								CALL_MEMBER_FN(actor, SetRace)(refToPlace->race.race, false);
 							}
 							
-							//PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							////CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else if (reftype == 61)
@@ -583,31 +652,12 @@ namespace chutools
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							////CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+							
 						}
 					}
 					else
 					{
-						/*
-							const char * john = thisCell->refData.refArray[i].ref->baseForm->GetName();
-							if (john)
-							{
-
-								_MESSAGE(john);
-							}
-							std::string p = std::to_string(thisCell->refData.refArray[i].ref->formID);
-
-								_MESSAGE(p.c_str());
-
-
-							p = std::to_string(thisCell->refData.refArray[i].ref->baseForm->formType);
-
-								_MESSAGE(p.c_str());
-
-							*/
+						
 					}
 				}
 				if (refrplcd == true)
