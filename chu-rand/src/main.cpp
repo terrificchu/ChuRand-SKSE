@@ -53,22 +53,206 @@ static SKSEPapyrusInterface         * g_papyrus = NULL;
 extern EventDispatcher<SKSEModCallbackEvent>	g_modCallbackEventDispatcher;
 namespace chutools
 {
+	
+	UInt32 randintrange(int lwlim, int uplim)
+	{
+		std::random_device rd;
+		std::mt19937 generator(rd());
+		std::uniform_int_distribution<int> distribution(lwlim, uplim);
+		int rm = distribution(generator);
+		return rm;
+	}
+	TESForm * randformofsametype(TESForm * tomatch)
+	{
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+		int reftype = tomatch->formType;
+
+		if (reftype == 27)
+		{
+			int size = dataHandler->books.count - 1;
+			
+			int r1 = randintrange(0, size);
+			TESObjectBOOK * refToPlace = NULL;
+			dataHandler->books.GetNthItem(r1, refToPlace);
+			if (refToPlace != NULL)
+			{
+				return DYNAMIC_CAST(refToPlace, TESObjectBOOK, TESForm);
+				
+			}
+
+		}
+		else if (reftype == 26)
+		{
+			int size = dataHandler->armors.count - 1;
+
+			int r1 = randintrange(0, size);
+			TESObjectARMO * refToPlace = NULL;
+			dataHandler->armors.GetNthItem(r1, refToPlace);
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESObjectARMO, TESForm);
 
 
+			}
+		}
+		else if (reftype == 41)
+		{
+			int size = dataHandler->weapons.count - 1;
+			int r1 = randintrange(0, size);
+			TESObjectWEAP* refToPlace = NULL;
+			dataHandler->weapons.GetNthItem(r1, refToPlace);
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESObjectWEAP, TESForm);
+				
+			}
+		}
+		else if (reftype == 30)
+		{
+			
+			int size = dataHandler->ingredients.count - 1;
+			
+			int r1 = randintrange(0, size);
+			IngredientItem* refToPlace = NULL;
+			while (dataHandler->ingredients.GetNthItem(r1, refToPlace) == NULL)
+			{
+				r1 = r1 = randintrange(0, size);
+				dataHandler->ingredients.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+				return DYNAMIC_CAST(refToPlace, IngredientItem, TESForm);
+				
+			}
+		}
+		else if (reftype == 32)
+		{
+			
+			int size = dataHandler->miscObjects.count - 1;
+			int r1sub = std::rand() % 10;
+			
+			int r1 = 1;
+			int tsize = size - 966;
+			if (r1sub < 5)
+			{
+				r1 = randintrange(1, 427);
+			}
+			else if (r1sub > 5)
+			{
+				r1 = randintrange(967, size);
+			}
+			TESObjectMISC* refToPlace = NULL;
+			dataHandler->miscObjects.GetNthItem(r1, refToPlace);
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESObjectMISC, TESForm);
+				
+			}
+		}
+		else if (reftype == 46)
+		{
+			
+			int size = dataHandler->potions.count - 1;
+			
+			int r1 = randintrange(0, size);
+			AlchemyItem* refToPlace = NULL;
+			while (dataHandler->potions.GetNthItem(r1, refToPlace) == NULL)
+			{
+				int r1 = randintrange(0, size);
+				dataHandler->potions.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, AlchemyItem, TESForm);
+				
+			}
+		}
+		else if (reftype == 40)
+		{
+			
+			int size = dataHandler->arrFURN.count - 1;
+			
+			int r1 = randintrange(0, size);
+			TESFurniture* refToPlace = NULL;
+			while (dataHandler->arrFURN.GetNthItem(r1, refToPlace) == NULL)
+			{
+				int r1 = randintrange(0, size);
+				dataHandler->arrFURN.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESFurniture, TESForm);
+				
+				
+			}
+		}
+		else if (reftype == 43)
+		{
+			
+			int size = dataHandler->npcs.count - 1;
+			
+			int r1 = randintrange(0, size);
+			TESNPC * refToPlace = NULL;
+			while (dataHandler->npcs.GetNthItem(r1, refToPlace) == NULL)
+			{
+				int r1 = randintrange(0, size);
+				dataHandler->npcs.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESNPC, TESForm);
+
+				
+			}
+		}
+		else if (reftype == 61)
+		{
+		  //TODO
+		}
+		else if (reftype == 28)
+		{
+
+			
+			int size = dataHandler->arrCONT.count - 1;
+			
+			int r1 = randintrange(0, size);
+			TESObjectCONT* refToPlace = NULL;
+			while (dataHandler->arrCONT.GetNthItem(r1, refToPlace) == NULL)
+			{
+				int r1 = randintrange(0, size);
+				dataHandler->arrCONT.GetNthItem(r1, refToPlace);
+			}
+			if (refToPlace != NULL)
+			{
+
+				return DYNAMIC_CAST(refToPlace, TESObjectCONT, TESForm);
+
+			}
+		}
+		else
+		{
+			_MESSAGE("REF TYPE NOT SUPPORTED YET");
+			return tomatch;
+		}
+	}
 	void distributeformlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, BGSListForm * list, VMArray<TESLevItem*> forms)
 	{
-		std::array<int, 9117> aj;
-		std::iota(aj.begin(), aj.end(), 1);
 		int progress = 0;
-		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-		std::shuffle(aj.begin(), aj.end(), std::default_random_engine(seed));
+		TESLevItem * form3 = NULL;
+		forms.Get(&form3, 39);
 		std::random_device rd;
 		std::mt19937 generator(rd());
 		
 		if (list)
 		{
 			
-			for (UInt32 i = 0; i < forms.Length(); i++)
+			for (UInt32 i = 0; i < 38; i++)
 			{
 					TESLevItem * form2 = NULL;
 					forms.Get(&form2, i);
@@ -82,22 +266,51 @@ namespace chutools
 								break;
 							}
 						
-							int lindex = aj[progress];
-							std::uniform_int_distribution<int> distribution(1, 25);
-							int r1 = distribution(generator);
-							int r2 = distribution(generator);
-							CALL_MEMBER_FN(&form2->leveledList, LAddForm)(&form2->leveledList, r1, r2, list->forms.entries[lindex]);
+							
+							int rm = randintrange(1, 3);
+							int rmsub = 0;
+							if (rm == 1)
+							{
+								
+								rmsub = randintrange(0, 3228);
+								
+							}
+							else if(rm == 2)
+							{ 
+								
+								rmsub = randintrange(5230, 8668);
+							
+							}
+							else if (rm == 3)
+							{
+								
+								int rmsub2 = (1, 3);
+								if (rmsub2 == 1)
+								{
+									
+									rmsub = randintrange(8669, 9116);
+								}
+								else
+								{
+									
+									rmsub = randintrange(3229, 5229);
+								}
+							}
+							
+							int r1 = randintrange(1, 25);
+							
+							int r2 = randintrange(1, 5);
+							CALL_MEMBER_FN(&form2->leveledList, LAddForm)(&form2->leveledList, r1, r2, list->forms.entries[rmsub]);
 							progress += 1;
 
 
 
 
-							_MESSAGE(" formid");
-
 						}
+						CALL_MEMBER_FN(&form3->leveledList, LAddForm)(&form3->leveledList, 1, 1, form2);
+
 					}
-				
-				
+					
 			}
 		}
 		
@@ -105,27 +318,37 @@ namespace chutools
 		
 		for (UInt32 i = 0; i < dataHandler->arrLVLI.count; i++)
 		{
+			bool matchform = false;
 			TESForm * tempLVLIF = NULL;
 			dataHandler->arrLVLI.GetNthItem(i, tempLVLIF);
 			TESLeveledList * tempLVLI = DYNAMIC_CAST(tempLVLIF, TESForm, TESLeveledList);
-			for (UInt32 k = 0; k < 10; k++)
+			for (UInt32 p = 0; p < 39; p++)
 			{
-				if (tempLVLI->length > 250)
+				TESLevItem * form2 = NULL;
+				forms.Get(&form2, p);
+				if (&form2->leveledList == tempLVLI)
 				{
-					break;
+					matchform = true;
 				}
-				else
+			}
+			if (matchform == false)
+			{
+				for (UInt32 k = 0; k < 1; k++)
 				{
-					std::uniform_int_distribution<int> distribution(0, 39);
-					int r1 = distribution(generator);
-					TESLevItem * formL = NULL;
-					forms.Get(&formL, r1);
-					CALL_MEMBER_FN(tempLVLI, LAddForm)(tempLVLI, 1, 1, DYNAMIC_CAST(formL, TESLevItem, TESForm));
+					if (tempLVLI->length > 250)
+					{
+						break;
+					}
+					else
+					{
+						CALL_MEMBER_FN(tempLVLI, LAddForm)(tempLVLI, 1, 1, DYNAMIC_CAST(form3, TESLevItem, TESForm));
+					}
 				}
 			}
 		}
 	}
-
+	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms)
+	{}
 	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell)
 	{
 
@@ -414,6 +637,10 @@ namespace chutools
 	bool RegisterFuncs(VMClassRegistry* a_registry) {
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
+		a_registry->RegisterFunction(
+			new NativeFunction1<StaticFunctionTag, void, VMArray<TESLevItem*>>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
+		a_registry->RegisterFunction(
+			new NativeFunction0 <TESForm, TESForm *>("randformofsametype", "Form", chutools::randformofsametype, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction2<StaticFunctionTag, void, BGSListForm*, VMArray<TESLevItem*>>("distributeformlist", "chutools", chutools::distributeformlist, a_registry));
 		return true;
