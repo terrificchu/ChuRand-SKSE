@@ -5,6 +5,9 @@
 #include <ShlObj.h>  // CSIDL_MYDOCUMENTS
 #include <chrono>
 #include <random>
+#include <numeric>
+#include <array>
+#include <algorithm>
 #include "skse64/PapyrusModEvent.h"
 #include "version.h"  // VERSION_VERSTRING, VERSION_MAJOR
 
@@ -54,26 +57,69 @@ namespace chutools
 
 	void distributeformlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, BGSListForm * list, VMArray<TESLevItem*> forms)
 	{
+		std::array<int, 9117> aj;
+		std::iota(aj.begin(), aj.end(), 1);
 		int progress = 0;
+		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+		std::shuffle(aj.begin(), aj.end(), std::default_random_engine(seed));
+		std::random_device rd;
+		std::mt19937 generator(rd());
 		
 		if (list)
 		{
-			for (UInt32 i = 1; i < forms.Length(); i++)
+			
+			for (UInt32 i = 0; i < forms.Length(); i++)
 			{
-				TESLevItem * form2 = NULL;
-				forms.Get(&form2, i);
-				if (form2)
-				{
-					for (UInt32 k = 0; k < 250; k++)
+					TESLevItem * form2 = NULL;
+					forms.Get(&form2, i);
+					if (form2)
 					{
-						CALL_MEMBER_FN(&form2->leveledList, LAddForm)(list->forms.entries[progress], 1, 1);
-						progress += 1;
-						form2->leveledList.entries[k].form = list->forms.entries[progress];
-
-
-						_MESSAGE(" formid" );
+						for (UInt32 k = 0; k < 250; k++)
+						{
+							if (progress > 9111)
+							{
+								i = 41;
+								break;
+							}
 						
+							int lindex = aj[progress];
+							std::uniform_int_distribution<int> distribution(1, 25);
+							int r1 = distribution(generator);
+							CALL_MEMBER_FN(&form2->leveledList, LAddForm)(&form2->leveledList, r1, r1, list->forms.entries[lindex]);
+							progress += 1;
+
+
+
+
+							_MESSAGE(" formid");
+
+						}
 					}
+				
+				
+			}
+		}
+		
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+		
+		for (UInt32 i = 0; i < dataHandler->arrLVLI.count; i++)
+		{
+			TESForm * tempLVLIF = NULL;
+			dataHandler->arrLVLI.GetNthItem(i, tempLVLIF);
+			TESLeveledList * tempLVLI = DYNAMIC_CAST(tempLVLIF, TESForm, TESLeveledList);
+			for (UInt32 k = 0; k < 10; k++)
+			{
+				if (tempLVLI->length > 250)
+				{
+					break;
+				}
+				else
+				{
+					std::uniform_int_distribution<int> distribution(0, 39);
+					int r1 = distribution(generator);
+					TESLevItem * formL = NULL;
+					forms.Get(&formL, r1);
+					CALL_MEMBER_FN(tempLVLI, LAddForm)(tempLVLI, 1, 1, DYNAMIC_CAST(formL, TESLevItem, TESForm));
 				}
 			}
 		}
@@ -148,10 +194,7 @@ namespace chutools
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
 
-							//UInt32 a_refhandle = GetOrCreateRefrHandle(thisCell->refData.refArray[i].ref);
-							//TESWorldSpace* worldspace = CALL_MEMBER_FN(thisCell->refData.refArray[i].ref, GetWorldspace)();
-							//MoveRefrToPosition(thisCell->refData.refArray[i].ref, &a_refhandle, thisCell, worldspace, &pos, &thisCell->refData.refArray[i].ref->rot);
-							//CALL_MEMBER_FN(todel, AddFormToList)(DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm));
+			
 						}
 					}
 					else if (reftype == 41)

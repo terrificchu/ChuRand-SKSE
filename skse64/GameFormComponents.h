@@ -538,7 +538,7 @@ public:
 	TESGlobal * chanceGlobal;		// 20
 
 	MEMBER_FN_PREFIX(TESLeveledList);
-	DEFINE_MEMBER_FN(LAddForm, void, 0x00198B80, TESForm * apForm, UInt16 level, UInt16 count);
+	DEFINE_MEMBER_FN(LAddForm, void, 0x00198B80, TESLeveledList * f, UInt16 level, UInt16 count, TESForm * apForm);
 };
 
 // 28 
