@@ -372,6 +372,7 @@ namespace chutools
 	{
 		bool alogic = false;
 		bool blogic = false;
+		bool clogic = true;
 		DataHandler * dataHandler = DataHandler::GetSingleton();
 
 		for (UInt32 i = 0; i < dataHandler->arrLVLI.count; i++)
@@ -420,6 +421,7 @@ namespace chutools
 							}
 							else if (alogic == true && blogic == true)
 							{
+								
 								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
 							}
 							else if (alogic == true && blogic == false)
@@ -428,6 +430,10 @@ namespace chutools
 								int r2 = randintrange(1, 5);
 								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, r1, r2, toadd);
 
+							}
+							else if (clogic == true && alogic == false)
+							{
+								tempLVLI->leveledList.entries[k].form = toadd;
 							}
 							
 						}
@@ -438,6 +444,113 @@ namespace chutools
 					}
 				}
 			}
+		}
+	}
+	void shufflelootcont(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput)
+	{
+		bool alogic = false;
+		bool blogic = false;
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+
+		for (UInt32 i = 0; i < dataHandler->arrCONT.count; i++)
+		{
+			bool matchform = false;
+			TESObjectCONT * tempF = NULL;
+			dataHandler->arrCONT.GetNthItem(i, tempF);
+			int lsize = tempF->container.numEntries;
+			
+			for (UInt32 k = 0; k < lsize; k++)
+				{
+					if (tempF->container.numEntries > 250 || k > 250)
+					{
+						break;
+					}
+					else
+					{
+						if (tempF->container.entries[k]->form)
+						{
+
+							TESForm * toadd = NULL;
+
+							do {
+
+								toadd = randformofsametype(tempF->container.entries[k]->form);
+
+							} while (!toadd);
+							if (alogic == false && blogic == false)
+							{
+								tempF->container.entries[k]->form = toadd;
+								
+							}
+							else if (alogic == true && blogic == true)
+							{
+								
+							}
+							else if (alogic == true && blogic == false)
+							{
+								int r1 = randintrange(1, 75);
+								int r2 = randintrange(1, 5);
+								
+							}
+
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+			
+		}
+		for (UInt32 i = 0; i < dataHandler->npcs.count; i++)
+		{
+			bool matchform = false;
+			TESNPC * tempF = NULL;
+			dataHandler->npcs.GetNthItem(i, tempF);
+			int lsize = tempF->container.numEntries;
+
+			for (UInt32 k = 0; k < lsize; k++)
+			{
+				if (tempF->container.numEntries > 250 || k > 250)
+				{
+					break;
+				}
+				else
+				{
+					if (tempF->container.entries[k]->form)
+					{
+
+						TESForm * toadd = NULL;
+
+						do {
+
+							toadd = randformofsametype(tempF->container.entries[k]->form);
+
+						} while (!toadd);
+						if (alogic == false && blogic == false)
+						{
+							tempF->container.entries[k]->form = toadd;
+							
+						}
+						else if (alogic == true && blogic == true)
+						{
+
+						}
+						else if (alogic == true && blogic == false)
+						{
+							int r1 = randintrange(1, 75);
+							int r2 = randintrange(1, 5);
+
+						}
+
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+
 		}
 	}
 	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell)
@@ -689,6 +802,8 @@ namespace chutools
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, VMArray<TESLevItem*>>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
+		a_registry->RegisterFunction(
+			new NativeFunction0<StaticFunctionTag, void>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction0 <TESForm, TESForm *>("randformofsametype", "Form", chutools::randformofsametype, a_registry));
 		a_registry->RegisterFunction(
