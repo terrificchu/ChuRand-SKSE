@@ -10,3 +10,4 @@ Hoping to increase stability and speed by building the a version of the randomiz
     SKSE64
 ### How (can) I use this?
   As of now this is very much a WIP. However, you should be able to compile yourself and utilise the commands at your will.
+  If you truely desire, A pre-built esp and dll are found here: https://github.com/terrificchu/CHUrandSKSE-ESP
