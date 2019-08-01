@@ -285,8 +285,7 @@ namespace chutools
 		int progress = 0;
 		TESLevItem * form3 = NULL;
 		forms.Get(&form3, 39);
-		std::random_device rd;
-		std::mt19937 generator(rd());
+		
 		
 		if (list)
 		{
@@ -386,11 +385,8 @@ namespace chutools
 			}
 		}
 	}
-	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms)
+	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms, bool alogic = true, bool blogic = true, bool clogic = true)
 	{
-		bool alogic = true;
-		bool blogic = true;
-		bool clogic = false;
 		DataHandler * dataHandler = DataHandler::GetSingleton();
 
 		for (UInt32 i = 0; i < dataHandler->arrLVLI.count; i++)
@@ -400,7 +396,7 @@ namespace chutools
 			dataHandler->arrLVLI.GetNthItem(i, tempLVLIF);
 			TESLevItem * tempLVLI = DYNAMIC_CAST(tempLVLIF, TESForm, TESLevItem);
 			int lsize = tempLVLI->leveledList.length;
-			for (UInt32 p = 0; p < 39; p++)
+			for (UInt32 p = 0; p < 1; p++)
 			{
 				TESLevItem * form2 = NULL;
 				forms.Get(&form2, p);
@@ -523,10 +519,8 @@ namespace chutools
 			}
 		}
 	}
-	void shufflelootcont(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput)
+	void shufflelootcont(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, bool alogic = false, bool blogic = false)
 	{
-		bool alogic = false;
-		bool blogic = false;
 		DataHandler * dataHandler = DataHandler::GetSingleton();
 
 		for (UInt32 i = 0; i < dataHandler->arrCONT.count; i++)
@@ -639,15 +633,12 @@ namespace chutools
 			return;
 		}
 		bool refrplcd = false;
-		std::random_device rd;
-		std::mt19937 generator(rd());
 		TESQuest * quest = DYNAMIC_CAST(LookupFormByID(118045387), TESForm, TESQuest);
 		TESForm *  tmptodel = LookupFormByID(118688224);
 		BGSListForm * todel = DYNAMIC_CAST(tmptodel, TESForm, BGSListForm);
 		CALL_MEMBER_FN(todel, RevertList)();
 		registry = (*g_skyrimVM)->GetClassRegistry();
 		UInt32	numRefs = thisCell->refData.maxSize - thisCell->refData.freeEntries;
-		DataHandler * dataHandler = DataHandler::GetSingleton();
 		//UInt32 a_refhandle = NULL;
 		_MESSAGE("PREPcompleted");
 		
@@ -670,9 +661,6 @@ namespace chutools
 					if (reftype == 43)
 					{
 						refrplcd = false;
-						int size = dataHandler->npcs.count - 1;
-						std::uniform_int_distribution<int> distribution(1, size);
-						int r1 = distribution(generator);
 						TESForm * refToPlace = NULL;
 						do
 						{
@@ -744,11 +732,11 @@ namespace chutools
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
 		a_registry->RegisterFunction(
-			new NativeFunction1<StaticFunctionTag, void, VMArray<TESLevItem*>>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
+			new NativeFunction4<StaticFunctionTag, void, VMArray<TESLevItem*>, bool, bool, bool>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction3<StaticFunctionTag, void, BGSListForm*, BGSListForm*, BGSListForm*>("shuffleNPClist", "chutools", chutools::shuffleNPClist, a_registry));
 		a_registry->RegisterFunction(
-			new NativeFunction0<StaticFunctionTag, void>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
+			new NativeFunction2<StaticFunctionTag, void, bool, bool>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction0 <TESForm, TESForm *>("randformofsametype", "Form", chutools::randformofsametype, a_registry));
 		a_registry->RegisterFunction(
