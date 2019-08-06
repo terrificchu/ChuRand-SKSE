@@ -385,7 +385,7 @@ namespace chutools
 			}
 		}
 	}
-	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms, bool alogic = true, bool blogic = true, bool clogic = true)
+	void shufflelootlist(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, VMArray<TESLevItem*> forms, UInt32 logictype = 0)
 	{
 		DataHandler * dataHandler = DataHandler::GetSingleton();
 
@@ -425,31 +425,31 @@ namespace chutools
 								toadd = randformofsametype(tempLVLI->leveledList.entries[k].form);
 
 							} while (!toadd  || toadd->formID == tempLVLIF->formID);
-							if (alogic == false && blogic == false)
-							{
-								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
+							switch (logictype) {
+							case 0: {
+									CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
+									break;
 							}
-							else if (alogic == true && tempLVLI->leveledList.entries[k].form->formType == 53)
-							{
-								continue;
-							}
-							else if (alogic == true && blogic == true)
-							{
-								
-								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
-							}
-							else if (alogic == true && blogic == false)
-							{
+							case 1:
+								if (toadd->formType == 53)
+								{
+									break;
+								}
+								else
+								{
+									CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, tempLVLI->leveledList.entries[k].level, tempLVLI->leveledList.entries[k].count, toadd);
+								}
+								break;
+							case 2: {
 								int r1 = randintrange(1, 75);
 								int r2 = randintrange(1, 5);
 								CALL_MEMBER_FN(&tempLVLI->leveledList, LAddForm)(&tempLVLI->leveledList, r1, r2, toadd);
-
+								break;
 							}
-							else if (clogic == true && alogic == false)
-							{
+							case 3:
 								tempLVLI->leveledList.entries[k].form = toadd;
+								break;
 							}
-							
 						}
 						else
 						{
@@ -519,7 +519,7 @@ namespace chutools
 			}
 		}
 	}
-	void shufflelootcont(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, bool alogic = false, bool blogic = false)
+	void shufflelootcont(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, UInt32 logictype = 0)
 	{
 		DataHandler * dataHandler = DataHandler::GetSingleton();
 
@@ -548,20 +548,16 @@ namespace chutools
 								toadd = randformofsametype(tempF->container.entries[k]->form);
 
 							} while (!toadd);
-							if (alogic == false && blogic == false)
-							{
+							switch (logictype){
+							case 0:
 								tempF->container.entries[k]->form = toadd;
-								
-							}
-							else if (alogic == true && blogic == true)
-							{
-								
-							}
-							else if (alogic == true && blogic == false)
-							{
+								break;
+							case 1:
+								//todo
+
 								int r1 = randintrange(1, 75);
 								int r2 = randintrange(1, 5);
-								
+
 							}
 
 						}
@@ -598,17 +594,13 @@ namespace chutools
 							toadd = randformofsametype(tempF->container.entries[k]->form);
 
 						} while (!toadd);
-						if (alogic == false && blogic == false)
+						switch (logictype)
 						{
+						case 0:
 							tempF->container.entries[k]->form = toadd;
-							
-						}
-						else if (alogic == true && blogic == true)
-						{
-
-						}
-						else if (alogic == true && blogic == false)
-						{
+							break;
+						case 1:
+							//todo
 							int r1 = randintrange(1, 75);
 							int r2 = randintrange(1, 5);
 
@@ -728,17 +720,42 @@ namespace chutools
 		_MESSAGE("Random succeed");
 		return;
 	}
+	void swaptextsets(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput)
+	{
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+			for (UInt32 i = 0; i < dataHandler->arrTXST.count; i++)
+			{
+				TESForm * toswapF = NULL;
+				TESForm * toreplaceF = NULL;
+				dataHandler->arrTXST.GetNthItem(i, toswapF);
+				int k = randintrange(0, (dataHandler->arrTXST.count - 1));
+				dataHandler->arrTXST.GetNthItem(k, toreplaceF);
+				BGSTextureSet * toswap = DYNAMIC_CAST(toswapF, TESForm, BGSTextureSet);
+				BGSTextureSet * toreplace = DYNAMIC_CAST(toreplaceF, TESForm, BGSTextureSet);
+				if (toswap && toreplace) {
+					for (UInt32 j = 0; j < toswap->kNumTextures; j++)
+					{
+
+						toswap->textureSet.SetTexturePath(j, toreplace->textureSet.GetTexturePath(j));
+
+					}
+
+				}
+			}
+	}
 	bool RegisterFuncs(VMClassRegistry* a_registry) {
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
 		a_registry->RegisterFunction(
-			new NativeFunction4<StaticFunctionTag, void, VMArray<TESLevItem*>, bool, bool, bool>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
+			new NativeFunction2<StaticFunctionTag, void, VMArray<TESLevItem*>, UInt32>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction3<StaticFunctionTag, void, BGSListForm*, BGSListForm*, BGSListForm*>("shuffleNPClist", "chutools", chutools::shuffleNPClist, a_registry));
 		a_registry->RegisterFunction(
-			new NativeFunction2<StaticFunctionTag, void, bool, bool>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
+			new NativeFunction1<StaticFunctionTag, void, UInt32>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction0 <TESForm, TESForm *>("randformofsametype", "Form", chutools::randformofsametype, a_registry));
+		a_registry->RegisterFunction(
+			new NativeFunction0 <StaticFunctionTag, void>("swaptextsets", "chutools", chutools::swaptextsets, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction2<StaticFunctionTag, void, BGSListForm*, VMArray<TESLevItem*>>("distributeformlist", "chutools", chutools::distributeformlist, a_registry));
 		return true;
