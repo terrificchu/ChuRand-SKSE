@@ -879,16 +879,15 @@ namespace chutools
 
 				}
 			}
-			for (UInt32 i = 0; i < dataHandler->headParts.count; i++)
+			for (UInt32 i = 0; i < dataHandler->npcs.count; i++)
 			{
-				BGSHeadPart * toswapF = NULL;
-				TESForm * toreplaceF = NULL;
-				dataHandler->headParts.GetNthItem(i, toswapF);
-				int k = randintrange(0, (dataHandler->arrTXST.count - 1));
-				dataHandler->arrTXST.GetNthItem(k, toreplaceF);
-				BGSTextureSet * toreplace = DYNAMIC_CAST(toreplaceF, TESForm, BGSTextureSet);
-				if (toswapF != nullptr && toreplace != nullptr) {
-					toswapF->textureSet = toreplace;
+				TESNPC * toswapF = NULL;
+				BGSHeadPart * toreplaceF = NULL;
+				dataHandler->npcs.GetNthItem(i, toswapF);
+				int k = randintrange(0, (dataHandler->headParts.count - 1));
+				dataHandler->headParts.GetNthItem(k, toreplaceF);
+				if (toswapF != nullptr && toreplaceF != nullptr) {
+					CALL_MEMBER_FN(toswapF, ChangeHeadPart)(toreplaceF);
 
 				}
 
