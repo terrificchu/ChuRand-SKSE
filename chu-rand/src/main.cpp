@@ -49,6 +49,8 @@
 #include "chu-rand/lib/EventFunctors.h"
 #include "skse64/GameFormComponents.h"
 
+
+
 static SKSEPapyrusInterface         * g_papyrus = NULL;
 extern EventDispatcher<SKSEModCallbackEvent>	g_modCallbackEventDispatcher;
 namespace chutools
@@ -431,7 +433,7 @@ namespace chutools
 									break;
 							}
 							case 1:
-								if (toadd->formType == 53)
+								if (toadd->formType == tempLVLIF->formType)
 								{
 									break;
 								}
@@ -616,7 +618,7 @@ namespace chutools
 
 		}
 	}
-	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell)
+	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell, TESQuest * delquest, BGSListForm * todel, bool chaos=false)
 	{
 
 
@@ -625,22 +627,21 @@ namespace chutools
 			return;
 		}
 		bool refrplcd = false;
-		TESQuest * quest = DYNAMIC_CAST(LookupFormByID(118045387), TESForm, TESQuest);
-		TESForm *  tmptodel = LookupFormByID(118688224);
-		BGSListForm * todel = DYNAMIC_CAST(tmptodel, TESForm, BGSListForm);
-		CALL_MEMBER_FN(todel, RevertList)();
 		registry = (*g_skyrimVM)->GetClassRegistry();
 		UInt32	numRefs = thisCell->refData.maxSize - thisCell->refData.freeEntries;
+		DataHandler * dataHandler = DataHandler::GetSingleton();
 		//UInt32 a_refhandle = NULL;
 		_MESSAGE("PREPcompleted");
-		
+		void * chcknull = NULL;
 
 
 		for (UInt32 i = 0; i < numRefs; i++)
 		{
-			if (thisCell->refData.refArray[i].unk08 && thisCell->refData.refArray[i].ref)
+			TESObjectCELL::ReferenceData::Reference * arrayreftoreplace = &thisCell->refData.refArray[i];
+			refrplcd = false;
+			if (arrayreftoreplace && arrayreftoreplace->unk08 != nullptr)
 			{
-				refrplcd = false;
+				
 				if (referenceUtils::GetNumReferenceAliases(&thisCell->refData.refArray[i].ref->extraData) == 0)
 				{
 					UInt8 reftype = thisCell->refData.refArray[i].ref->baseForm->formType;
@@ -650,70 +651,206 @@ namespace chutools
 					pos.y = thisCell->refData.refArray[i].ref->pos.y + 100000;
 					pos.z = thisCell->refData.refArray[i].ref->pos.z + 100000;
 
-					if (reftype == 43)
+					if (reftype == 27)
 					{
-						refrplcd = false;
-						TESForm * refToPlace = NULL;
-						do
-						{
-							refToPlace = randformofsametype(refToReplace->baseForm);
-						} while (!refToPlace);
-
-						if(refToPlace)
-						{
-							
-							Actor * actor = DYNAMIC_CAST(refToReplace, TESObjectREFR, Actor);
-							TESNPC * pactor = DYNAMIC_CAST(refToReplace, TESForm, TESNPC);
-							if (actor != NULL)
-							{
-								CALL_MEMBER_FN(actor, SetRace)(pactor->race.race, false);
-							}
-							
-							
-						}
-					}
-					else if (reftype == 61)
-					{
-						//
-					}
-					else
-					{
-						
 						refrplcd = true;
-						TESForm * refToPlace = NULL;
-						do
-						{
-							refToPlace = randformofsametype(refToReplace->baseForm);
-
-						} while (!refToPlace);
-
-						if (refToPlace)
+						int size = dataHandler->books.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESObjectBOOK * refToPlace = NULL;
+						dataHandler->books.GetNthItem(r1, refToPlace);
+						if (refToPlace != NULL)
 						{
 
 							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
 							
 						}
+
 					}
-					
+					else if (reftype == 26)
+					{
+						refrplcd = true;
+						int size = dataHandler->armors.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESObjectARMO * refToPlace = NULL;
+						dataHandler->armors.GetNthItem(r1, refToPlace);
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+
+						}
+					}
+					else if (reftype == 41)
+					{
+						refrplcd = true;
+						int size = dataHandler->weapons.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESObjectWEAP* refToPlace = NULL;
+						dataHandler->weapons.GetNthItem(r1, refToPlace);
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else if (reftype == 30)
+					{
+						refrplcd = true;
+						int size = dataHandler->ingredients.count - 1;
+						
+						int r1 = randintrange(0, size);
+						IngredientItem* refToPlace = NULL;
+						while (dataHandler->ingredients.GetNthItem(r1, refToPlace) == NULL)
+						{
+							r1 = randintrange(0, size);
+							dataHandler->ingredients.GetNthItem(r1, refToPlace);
+						}
+						if (refToPlace != NULL)
+						{
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else if (reftype == 32)
+					{
+						refrplcd = true;
+						int size = dataHandler->miscObjects.count - 1;
+						int r1sub = randintrange(0, 10);
+						int r1 = 1;
+						int tsize = size - 966;
+						if (r1sub < 5)
+						{
+							
+							r1 = r1 = randintrange(0, 427);
+						}
+						else if (r1sub > 5)
+						{
+							
+							r1 = randintrange(967, size);
+						}
+						TESObjectMISC* refToPlace = NULL;
+						dataHandler->miscObjects.GetNthItem(r1, refToPlace);
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else if (reftype == 46)
+					{
+						refrplcd = true;
+						int size = dataHandler->potions.count - 1;
+						
+						int r1 = randintrange(0, size);
+						AlchemyItem* refToPlace = NULL;
+						while (dataHandler->potions.GetNthItem(r1, refToPlace) == NULL)
+						{
+							int r1 = randintrange(0, size);
+							dataHandler->potions.GetNthItem(r1, refToPlace);
+						}
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else if (reftype == 40 && chaos == true)
+					{
+						refrplcd = true;
+						int size = dataHandler->arrFURN.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESFurniture* refToPlace = NULL;
+						while (dataHandler->arrFURN.GetNthItem(r1, refToPlace) == NULL)
+						{
+							int r1 = randintrange(0, size);
+							dataHandler->arrFURN.GetNthItem(r1, refToPlace);
+						}
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else if (reftype == 43 && chaos == true)
+					{
+						refrplcd = false;
+						int size = dataHandler->npcs.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESNPC * refToPlace = NULL;
+						while (dataHandler->npcs.GetNthItem(r1, refToPlace) == NULL)
+						{
+							int r1 = randintrange(0, size);
+							dataHandler->npcs.GetNthItem(r1, refToPlace);
+						}
+						if (refToPlace != NULL)
+						{
+
+							Actor * actor = DYNAMIC_CAST(refToReplace, TESObjectREFR, Actor);
+							if (actor != NULL)
+							{
+								CALL_MEMBER_FN(actor, SetRace)(refToPlace->race.race, false);
+							}
+
+
+						}
+					}
+					else if (reftype == 61)
+					{
+
+					}
+					else if (reftype == 28 && chaos == true)
+					{
+
+						refrplcd = true;
+						int size = dataHandler->arrCONT.count - 1;
+						
+						int r1 = randintrange(0, size);
+						TESObjectCONT* refToPlace = NULL;
+						while (dataHandler->arrCONT.GetNthItem(r1, refToPlace) == NULL)
+						{
+							int r1 = randintrange(0, size);
+							dataHandler->arrCONT.GetNthItem(r1, refToPlace);
+						}
+						if (refToPlace != NULL)
+						{
+
+							PlaceAtMe_Native(registry, stackId, thisCell->refData.refArray[i].ref, refToPlace, 1, false, false);
+
+						}
+					}
+					else
+					{
+
+					}
 				}
 				if (refrplcd == true)
 				{
 					BSFixedString eventName("CHUrefFilled");
 
 
-					TESForm * form2send = DYNAMIC_CAST(thisCell->refData.refArray[i].ref, TESObjectREFR, TESForm);
-					EventQueueFunctor< TESObjectREFR *, TESForm *>(eventName, form2send).SendEvent(thisCell->refData.refArray[i].ref);
+					TESForm * form2send = DYNAMIC_CAST(arrayreftoreplace->ref, TESObjectREFR, TESForm);
+					EventQueueFunctor< TESObjectREFR *, TESForm *>(eventName, form2send).SendEvent(arrayreftoreplace->ref);
 
-					const uint64_t handle = EventLib::GetVMHandleForQuest(quest, false, 0);
+					const uint64_t handle = EventLib::GetVMHandleForQuest(delquest, false, 0);
 					if (handle)
 					{
 
-							EventLib::EventFunctor1<TESForm *>(eventName, form2send)(handle);
+						EventLib::EventFunctor1<TESForm *>(eventName, form2send)(handle);
 					}
 				}
-					
-					
-				
+
+
+
 			}
 
 		}
@@ -742,10 +879,25 @@ namespace chutools
 
 				}
 			}
+			for (UInt32 i = 0; i < dataHandler->headParts.count; i++)
+			{
+				BGSHeadPart * toswapF = NULL;
+				TESForm * toreplaceF = NULL;
+				dataHandler->headParts.GetNthItem(i, toswapF);
+				int k = randintrange(0, (dataHandler->arrTXST.count - 1));
+				dataHandler->arrTXST.GetNthItem(k, toreplaceF);
+				BGSTextureSet * toreplace = DYNAMIC_CAST(toreplaceF, TESForm, BGSTextureSet);
+				if (toswapF != nullptr && toreplace != nullptr) {
+					toswapF->textureSet = toreplace;
+
+				}
+
+
+			}
 	}
 	bool RegisterFuncs(VMClassRegistry* a_registry) {
 		a_registry->RegisterFunction(
-			new NativeFunction1<StaticFunctionTag, void, TESObjectCELL*>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
+			new NativeFunction4<StaticFunctionTag, void, TESObjectCELL*, TESQuest*, BGSListForm*, bool>("shufflelootwrld", "chutools", chutools::shufflelootwrld, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction2<StaticFunctionTag, void, VMArray<TESLevItem*>, UInt32>("shufflelootlist", "chutools", chutools::shufflelootlist, a_registry));
 		a_registry->RegisterFunction(
