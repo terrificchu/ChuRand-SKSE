@@ -17,11 +17,8 @@
 #include "skse64/PapyrusLeveledItem.h"
 #include "skse64/PapyrusWornObject.h"
 #include "skse64/GameObjects.h"
-
 #include "skse64/PapyrusCell.h"
-
 #include "skse64/GameForms.h"
-
 #include "skse64/GameReferences.h"
 #include "skse64/PapyrusGameData.h"
 #include "skse64/PapyrusDelayFunctors.h"
@@ -41,7 +38,7 @@
 #include "skse64_common/Utilities.h"
 #include "skse64/Serialization.h"
 #include "skse64_common/skse_version.h"
-#include "skse64/PapyrusEventFunctor.h"
+#include "skse64/PapyrusEnchantment.h"
 #include "skse64/GameEvents.h"
 #include <set>
 #include "chu-rand/lib/EventFunctors.h"
@@ -618,6 +615,33 @@ namespace chutools
 
 		}
 	}
+	void shuffleench(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, UInt32 logictype = 0)
+	{
+		DataHandler * dataHandler = DataHandler::GetSingleton();
+		for (UInt32 i = 0; i < dataHandler->enchantments.count; i++)
+		{
+			EnchantmentItem * toswap = NULL;
+			EnchantmentItem * toreplace = NULL;
+			dataHandler->enchantments.GetNthItem(i, toswap);
+			int k = randintrange(0, (dataHandler->enchantments.count - 1));
+			dataHandler->enchantments.GetNthItem(k, toreplace);
+			if (toswap != nullptr && toreplace != nullptr)
+			{
+				int exit1 = papyrusEnchantment::GetNumEffects(toswap);
+				int exit2 = papyrusEnchantment::GetNumEffects(toreplace);
+				for (UInt32 j = 0; j < exit1; j++)
+				{
+					int rindex = randintrange(0, (exit2 - 1));
+					papyrusEnchantment::SetNthEffectArea(toswap, j, papyrusEnchantment::GetNthEffectArea(toreplace, rindex));
+					papyrusEnchantment::SetNthEffectDuration(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
+					papyrusEnchantment::SetNthEffectMagnitude(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
+
+
+				}
+			}
+		}
+
+	}
 	void shufflelootwrld(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, TESObjectCELL* thisCell, TESQuest * delquest, BGSListForm * todel, bool chaos=false)
 	{
 
@@ -798,7 +822,7 @@ namespace chutools
 							Actor * actor = DYNAMIC_CAST(refToReplace, TESObjectREFR, Actor);
 							if (actor != NULL)
 							{
-								CALL_MEMBER_FN(actor, SetRace)(refToPlace->race.race, false);
+								// CALL_MEMBER_FN(actor, SetRace)(refToPlace->race.race, false);
 							}
 
 
@@ -903,6 +927,8 @@ namespace chutools
 			new NativeFunction3<StaticFunctionTag, void, BGSListForm*, BGSListForm*, BGSListForm*>("shuffleNPClist", "chutools", chutools::shuffleNPClist, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction1<StaticFunctionTag, void, UInt32>("shufflelootcont", "chutools", chutools::shufflelootcont, a_registry));
+		a_registry->RegisterFunction(
+			new NativeFunction1<StaticFunctionTag, void, UInt32>("shuffleench", "chutools", chutools::shuffleench, a_registry));
 		a_registry->RegisterFunction(
 			new NativeFunction0 <TESForm, TESForm *>("randformofsametype", "Form", chutools::randformofsametype, a_registry));
 		a_registry->RegisterFunction(
