@@ -618,6 +618,7 @@ namespace chutools
 	void shuffleench(VMClassRegistry* registry, UInt32 stackId, StaticFunctionTag* thisInput, UInt32 logictype = 0)
 	{
 		DataHandler * dataHandler = DataHandler::GetSingleton();
+		logictype = 1;
 		for (UInt32 i = 0; i < dataHandler->enchantments.count; i++)
 		{
 			EnchantmentItem * toswap = NULL;
@@ -631,10 +632,25 @@ namespace chutools
 				int exit2 = papyrusEnchantment::GetNumEffects(toreplace);
 				for (UInt32 j = 0; j < exit1; j++)
 				{
-					int rindex = randintrange(0, (exit2 - 1));
-					papyrusEnchantment::SetNthEffectArea(toswap, j, papyrusEnchantment::GetNthEffectArea(toreplace, rindex));
-					papyrusEnchantment::SetNthEffectDuration(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
-					papyrusEnchantment::SetNthEffectMagnitude(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
+					switch (logictype) {
+					case 0:
+					{
+						int rindex = randintrange(0, (exit2 - 1));
+						papyrusEnchantment::SetNthEffectArea(toswap, j, papyrusEnchantment::GetNthEffectArea(toreplace, rindex));
+						papyrusEnchantment::SetNthEffectDuration(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
+						papyrusEnchantment::SetNthEffectMagnitude(toswap, j, papyrusEnchantment::GetNthEffectDuration(toreplace, rindex));
+					}
+					case 1:
+					{
+						int r1 = randintrange(0, 99);
+						int r2 = randintrange(0, 99);
+						int r3 = randintrange(0, 99);
+						papyrusEnchantment::SetNthEffectArea(toswap, j, r1);
+						papyrusEnchantment::SetNthEffectDuration(toswap, j, r2);
+						papyrusEnchantment::SetNthEffectMagnitude(toswap, j, r3);
+					}
+					}
+					
 
 
 				}
