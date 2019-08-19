@@ -670,6 +670,7 @@ namespace chutools
 		registry = (*g_skyrimVM)->GetClassRegistry();
 		UInt32	numRefs = thisCell->refData.maxSize - thisCell->refData.freeEntries;
 		DataHandler * dataHandler = DataHandler::GetSingleton();
+		PersistentFormManager * pformmanager = PersistentFormManager::GetSingleton();
 		//UInt32 a_refhandle = NULL;
 		_MESSAGE("PREPcompleted");
 		void * chcknull = NULL;
@@ -687,9 +688,9 @@ namespace chutools
 					UInt8 reftype = thisCell->refData.refArray[i].ref->baseForm->formType;
 					TESObjectREFR * refToReplace = thisCell->refData.refArray[i].ref;
 					NiPoint3 pos;
-					pos.x = thisCell->refData.refArray[i].ref->pos.x + 100000;
-					pos.y = thisCell->refData.refArray[i].ref->pos.y + 100000;
-					pos.z = thisCell->refData.refArray[i].ref->pos.z + 100000;
+					pos.x = thisCell->refData.refArray[i].ref->pos.x;
+					pos.y = thisCell->refData.refArray[i].ref->pos.y;
+					pos.z = thisCell->refData.refArray[i].ref->pos.z;
 
 					if (reftype == 27)
 					{
@@ -876,8 +877,6 @@ namespace chutools
 				if (refrplcd == true)
 				{
 					BSFixedString eventName("CHUrefFilled");
-
-
 					TESForm * form2send = DYNAMIC_CAST(arrayreftoreplace->ref, TESObjectREFR, TESForm);
 					EventQueueFunctor< TESObjectREFR *, TESForm *>(eventName, form2send).SendEvent(arrayreftoreplace->ref);
 
