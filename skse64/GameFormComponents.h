@@ -164,7 +164,7 @@ public:
 		UInt8	vatsTargetable;	// 05
 		UInt8	pad06[2];	// 06
 		void	*unk08;		// 08
-		
+
 		// ...?
 	};
 
@@ -517,10 +517,10 @@ public:
 
 	enum
 	{
-		kFlagCalculateFromAllLevelsLTPCLevel =	1 << 0,
-		kFlagCalculateForEachItemInCount	 =	1 << 1,
-		kFlagUseAll							 =	1 << 2,
-		kFlagSpecialLoot					 =	1 << 3
+		kFlagCalculateFromAllLevelsLTPCLevel = 1 << 0,
+		kFlagCalculateForEachItemInCount = 1 << 1,
+		kFlagUseAll = 1 << 2,
+		kFlagSpecialLoot = 1 << 3
 	};
 
 	virtual bool	Unk_04(void);
@@ -690,8 +690,8 @@ public:
 
 	virtual void	Unk_01(void);
 
-//	void	** _vtbl;	// 00
-	
+	//	void	** _vtbl;	// 00
+
 	Data		unk08;	// 08
 	UnkArray	unk40;	// 40
 };
@@ -765,13 +765,13 @@ public:
 
 	enum
 	{
-		kFlagUnk1				= (1 << 0),
-		kFlagUnk2				= (1 << 1),
-		kFlagCycleTracks		= (1 << 2),
-		kFlagDuclsCurrentTrack	= (1 << 5)
+		kFlagUnk1 = (1 << 0),
+		kFlagUnk2 = (1 << 1),
+		kFlagCycleTracks = (1 << 2),
+		kFlagDuclsCurrentTrack = (1 << 5)
 	};
 
-//	void		** _vtbl;			// 00
+	//	void		** _vtbl;			// 00
 	UInt32		flags;				// 08
 	UInt8		priority;			// 0C - init'd to 0x32
 	UInt8		unk09;				// 0D
@@ -832,7 +832,7 @@ public:
 	virtual void	Unk_01(void) = 0;
 	virtual void	Unk_02(void) = 0;
 
-//	void	** _vtbl;	// 00
+	//	void	** _vtbl;	// 00
 };
 
 // 08 
@@ -946,7 +946,7 @@ public:
 	virtual double					Unk_0A(int, int, int);
 	virtual UInt8					Unk_0B(int, int, int);
 
-//	void	** _vtbl;	// 00
+	//	void	** _vtbl;	// 00
 	UInt64 unk04;		// 08
 	UInt64 unk08;		// 10
 };
@@ -1125,7 +1125,7 @@ public:
 		UInt8		unk2A;			// 2A
 		UInt8		unk2B;			// 2B
 		UInt32		pad2C;			// 2C
-	};	
+	};
 
 	UnkArray	unk000;		// 000
 	UnkArray	unk018;		// 018
@@ -1223,7 +1223,7 @@ public:
 	UInt32	unk2C0;			// 2C0
 	UInt32	unk2C4;			// 2C4
 	float	actorAlpha;		// 2C8 - init'd to 1
-	
+
 	UInt8	todo2CC[0x338 - 0x2CC]; // TODO
 };
 STATIC_ASSERT(offsetof(MiddleProcess, effectList) == 0x1A0);
@@ -1253,7 +1253,7 @@ public:
 	MiddleProcess	* middleProcess;	// 08
 	void	* unk10;					// 10
 
-	
+
 	MiddleProcess::Data58	unk18;		// 18
 	float		unk48;					// 48 - init'd to -1
 	UInt32		unk4C;					// 4C
@@ -1321,15 +1321,15 @@ public:
 
 	bool VisitPerks(PerkVisitor & visitor)
 	{
-		if(visitor.Accept(perk))
+		if (visitor.Accept(perk))
 			return true;
 
-		for(UInt32 i = 0; i < connections.count; i++)
+		for (UInt32 i = 0; i < connections.count; i++)
 		{
 			BGSSkillPerkTreeNode* connector = NULL;
 			connections.GetNthItem(i, connector);
 
-			if(connector->VisitPerks(visitor))
+			if (connector->VisitPerks(visitor))
 				return true;
 		}
 

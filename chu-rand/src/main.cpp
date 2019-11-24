@@ -660,7 +660,7 @@ namespace chutools
 		}
 		else if(logictype == 2)
 		{
-			for (UInt32 i = 0; i < dataHandler->arrEffectSettings.count; i++)
+			for (UInt32 i = 0; i < dataHandler->arrEffectSettings.count; i++) 
 			{
 				EffectSetting * toswap = NULL;
 				EffectSetting * toreplace = NULL;
@@ -1008,7 +1008,7 @@ extern "C" {
 			_FATALERROR("[FATAL ERROR] Loaded in editor, marking as incompatible!\n");
 			return false;
 		}
-		else if (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_80) {
+		else if (a_skse->runtimeVersion != RUNTIME_VERSION_1_5_97) {
 			_FATALERROR("[FATAL ERROR] Unsupported runtime version %08X!\n", a_skse->runtimeVersion);
 			return false;
 		}
