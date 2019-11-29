@@ -6,14 +6,14 @@
 *.user
 *.userosscache
 *.sln.docstates
-skse64_common/
-skse64_loader/
-skse64_loader_common/
-skse64_steam_loader/
+skse64_common/*
+skse64_loader/*
+skse64_loader_common/*
+skse64_steam_loader/*
 xbyak/
 
-
-
+!skse64/GameReferences.h
+!skse64/GameReferences.cpp
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
