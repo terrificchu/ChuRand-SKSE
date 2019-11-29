@@ -20,6 +20,8 @@ RelocAddr<_MoveRefrToPosition> MoveRefrToPosition(0x009AE5C0);
 RelocAddr<_PlaceAtMe_Native> PlaceAtMe_Native(0x009951F0);
 RelocAddr<_AddItem_Native> AddItem_Native(0x00993100);
 
+RelocAddr<_Delete_Native> Delete_Native(0x00993860);
+
 UInt32 GetOrCreateRefrHandle(TESObjectREFR* ref)
 {
 	UInt32 invalidRefHandleVal = *(g_invalidRefHandle.GetPtr());

@@ -159,10 +159,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\skse64\GameReferences.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\skse64\GameFormComponents.h" />
+    <ClInclude Include="..\skse64\GameReferences.h" />
     <ClInclude Include="include\version.h" />
     <ClInclude Include="lib\EventFunctors.h" />
     <ClInclude Include="lib\EventHelpers.h" />

@@ -906,14 +906,18 @@ namespace chutools
 					{
 						BSFixedString eventName("CHUrefFilled");
 						TESForm * form2send = DYNAMIC_CAST(arrayreftoreplace->ref, TESObjectREFR, TESForm);
-						EventQueueFunctor< TESObjectREFR *, TESForm *>(eventName, form2send).SendEvent(arrayreftoreplace->ref);
+						//EventQueueFunctor< TESObjectREFR *, TESForm *>(eventName, form2send).SendEvent(arrayreftoreplace->ref);
 
 						const uint64_t handle = EventLib::GetVMHandleForQuest(delquest, false, 0);
-						if (handle)
+						//CALL_MEMBER_FN(arrayreftoreplace->ref, objDelete)();
+						Delete_Native(registry, stackId, arrayreftoreplace->ref);
+						refrplcd = false;
+						//if (handle)
 						{
 
-							EventLib::EventFunctor1<TESForm *>(eventName, form2send)(handle);
+							//EventLib::EventFunctor1<TESForm *>(eventName, form2send)(handle);
 						}
+
 					}
 
 

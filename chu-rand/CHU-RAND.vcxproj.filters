@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="..\skse64\GameReferences.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\version.h" />
@@ -12,6 +15,9 @@
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="..\skse64\GameFormComponents.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\skse64\GameReferences.h">
       <Filter>lib</Filter>
     </ClInclude>
   </ItemGroup>

@@ -79,6 +79,9 @@ extern RelocAddr<_PlaceAtMe_Native> PlaceAtMe_Native;
 typedef void (* _AddItem_Native)(VMClassRegistry* registry, UInt32 stackId, TESObjectREFR* target, TESForm* form, SInt32 count, bool bSilent);
 extern RelocAddr<_AddItem_Native> AddItem_Native;
 
+typedef void(*_Delete_Native)(VMClassRegistry* registry, UInt32 stackId, TESObjectREFR* target);
+extern RelocAddr<_Delete_Native> Delete_Native;
+
 // 8 
 class IAnimationGraphManagerHolder
 {
@@ -265,6 +268,10 @@ public:
 	DEFINE_MEMBER_FN(GetWeight, float, 0x002A6FF0);
 	DEFINE_MEMBER_FN(GetReferenceName, const char *, 0x002961F0);
 	DEFINE_MEMBER_FN(GetWorldspace, TESWorldSpace*, 0x00299750);
+	//DEFINE_MEMBER_FN(objDelete, void, 0x0029B980)
+	//DEFINE_MEMBER_FN(objDisable, void, 0x002A8F90)
+
+					
 };
 
 STATIC_ASSERT(sizeof(TESObjectREFR) == 0x98);
